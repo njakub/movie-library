@@ -1,21 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { getMovieByTitle, searchByTitle } from "./api/imdbApi";
-import MovieCard from "./components/MovieCard/MovieCard";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import AppShell from "./components/AppShell/AppShell";
+import MovieSearch from "./components/MovieSearch/MovieSearch";
+import MyProfile from "./components/MyProfile/MyProfile";
+import Home from "./components/Home/Home";
 
 function App() {
-  const [movie, setMovie] = useState({});
-  useEffect(() => {
-    async function fetchData() {
-      // You can await here
-      searchByTitle("Pulp Fiction");
-      const movieResp = await getMovieByTitle();
-      console.log("movieResp", movieResp);
-      setMovie(movieResp);
-      // ...
-    }
-    fetchData();
-  }, []);
-
   const movies = [
     {
       title: "Pulp Fiction",
@@ -24,7 +14,15 @@ function App() {
   ];
   return (
     <div className="App">
-      <MovieCard movie={movie} />
+      <Router>
+        <AppShell>
+          <Routes>
+            <Route exact path="/myProfile" element={<MyProfile />} />
+            <Route exact path="/movieSearch" element={<MovieSearch />} />
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </AppShell>
+      </Router>
     </div>
   );
 }

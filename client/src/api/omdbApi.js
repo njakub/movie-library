@@ -6,7 +6,7 @@ async function getMovieByTitle(title) {
     .then(function (response) {
       // handle success
       console.log(response);
-      return response.data;
+      return response;
     })
     .catch(function (error) {
       // handle error
@@ -20,7 +20,7 @@ async function searchByTitle(term) {
     .then(function (response) {
       // handle success
       console.log(response);
-      return response.data;
+      return response;
     })
     .catch(function (error) {
       // handle error
