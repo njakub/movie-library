@@ -4,6 +4,7 @@ import AppShell from "./components/AppShell/AppShell";
 import MovieSearch from "./components/MovieSearch/MovieSearch";
 import MyProfile from "./components/MyProfile/MyProfile";
 import Home from "./components/Home/Home";
+import Register from "./components/auth/Register";
 
 function App() {
   const movies = [
@@ -17,6 +18,7 @@ function App() {
       <Router>
         <AppShell>
           <Routes>
+            <Route exact path="/register" element={<Register />} />
             <Route exact path="/myProfile" element={<MyProfile />} />
             <Route exact path="/movieSearch" element={<MovieSearch />} />
             <Route path="/" element={<Home />} />

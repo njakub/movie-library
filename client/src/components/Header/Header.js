@@ -83,12 +83,12 @@ export default function Header() {
             >
               Sign in
             </a>
-            <a
-              href="#"
+            <Link
               className="inline-flex items-center justify-center px-4 py-2 ml-8 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm whitespace-nowrap hover:bg-indigo-700"
+              to="/register"
             >
               Sign up
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -145,12 +145,12 @@ export default function Header() {
             </div>
             <div className="px-5 py-6 space-y-6">
               <div>
-                <a
-                  href="#"
+                <Link
                   className="flex items-center justify-center w-full px-4 py-2 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700"
+                  to="/register"
                 >
                   Sign up
-                </a>
+                </Link>
                 <p className="mt-6 text-base font-medium text-center text-gray-500">
                   Existing customer?{" "}
                   <a href="#" className="text-indigo-600 hover:text-indigo-500">
