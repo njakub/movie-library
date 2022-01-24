@@ -7,8 +7,8 @@ function AppShell({ children }) {
     <>
       <Header />
       <main>
-        <div className="px-4 mx-auto max-w-7xl sm:px-6">
-          <div className="py-4 md:justify-start md:space-x-10">{children}</div>
+        <div className="px-8 mx-auto max-w-7xl sm:px-6 bg-white min-h-screen">
+          <div className="pt-4">{children}</div>
         </div>
       </main>
     </>

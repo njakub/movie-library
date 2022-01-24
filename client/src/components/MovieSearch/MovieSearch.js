@@ -42,7 +42,7 @@ function MovieSearch({}) {
           </div>
         </div>
       </form>
-      <div>
+      <div className="flex justify-between flex-wrap">
         {moviesResponse &&
           moviesResponse?.map((movie) => <MovieCard movie={movie} />)}
       </div>
