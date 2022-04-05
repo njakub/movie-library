@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { getMovieByTitle, searchByTitle } from "../../api/omdbApi";
+import { searchById, searchByTitle } from "../../api/omdbApi";
 import MovieCard from "../MovieCard/MovieCard";
+import MovieList from "../MovieList/MovieList";
 
 function MovieSearch({}) {
   const { register, handleSubmit } = useForm();
   const [moviesResponse, setMoviesResponse] = useState([]);
 
   const onSubmit = async (data) => {
-    console.log(data);
     const resp = await searchByTitle(data.title);
-    setMoviesResponse(resp?.data?.Search);
-    console.log(resp?.data?.Search);
+    const movieDetails = resp?.data?.Search.map(async (movie) => {
+      return await searchById(movie.imdbID);
+    });
+
+    Promise.all(movieDetails).then((values) => {
+      const moreThan100Likes = values.filter(
+        (movie) => parseInt(movie?.data?.imdbVotes.replace(/,/g, ""), 10) > 100
+      );
+      const displayMovies = moreThan100Likes.map((movie) => movie.data);
+
+      setMoviesResponse(displayMovies);
+    });
   };
 
   return (
@@ -21,7 +31,7 @@ function MovieSearch({}) {
           <div class="md:w-1/4">
             <label
               class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-              for="inline-full-name"
+              for="movie-search-name"
             >
               Movie Title:
             </label>
@@ -29,7 +39,7 @@ function MovieSearch({}) {
           <div class="md:w-2/4">
             <input
               class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-              id="inline-full-name"
+              id="movie-search-name"
               type="text"
               {...register("title")}
             />
@@ -42,9 +52,10 @@ function MovieSearch({}) {
           </div>
         </div>
       </form>
-      <div className="flex justify-between flex-wrap">
-        {moviesResponse &&
-          moviesResponse?.map((movie) => <MovieCard movie={movie} />)}
+      <div className="flex flex-wrap justify-between">
+        {/* {moviesResponse &&
+          moviesResponse?.map((movie) => <MovieCard movie={movie} />)} */}
+        {moviesResponse && <MovieList moviesResponse={moviesResponse} />}
       </div>
     </>
   );
