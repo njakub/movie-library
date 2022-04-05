@@ -1,8 +1,8 @@
 import axios from "axios";
 
-async function getMovieByTitle(title) {
+async function searchByTitle(term, page = 1) {
   return axios
-    .get("http://www.omdbapi.com/?apikey=c84d0fbc&t=Pulp+Fiction")
+    .get(`http://www.omdbapi.com/?apikey=c84d0fbc&s=${term}&page=${page}`)
     .then(function (response) {
       // handle success
       console.log(response);
@@ -14,9 +14,9 @@ async function getMovieByTitle(title) {
     });
 }
 
-async function searchByTitle(term) {
+async function searchById(id) {
   return axios
-    .get(`http://www.omdbapi.com/?apikey=c84d0fbc&s=${term}`)
+    .get(`http://www.omdbapi.com/?apikey=c84d0fbc&i=${id}`)
     .then(function (response) {
       // handle success
       console.log(response);
@@ -28,4 +28,4 @@ async function searchByTitle(term) {
     });
 }
 
-export { getMovieByTitle, searchByTitle };
+export { searchById, searchByTitle };
