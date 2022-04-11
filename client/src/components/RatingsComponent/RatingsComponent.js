@@ -3,6 +3,7 @@ import metacritic from "../../assets/metacritic.png";
 import rottenTomatoesLogo from "../../assets/rotten.png";
 
 function RatingsComponent({ ratings }) {
+  console.log("ratings", ratings);
   function logoSelector(name) {
     if (name === "Internet Movie Database") {
       return imdbLogo;

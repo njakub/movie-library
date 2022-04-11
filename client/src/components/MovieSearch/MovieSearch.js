@@ -1,27 +1,47 @@
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { searchById, searchByTitle } from "../../api/omdbApi";
+import { useForm, watch } from "react-hook-form";
+import { searchById, searchByTitle, getByTitle } from "../../api/omdbApi";
 import MovieCard from "../MovieCard/MovieCard";
-import MovieList from "../MovieList/MovieList";
+import ReactPaginate from "react-paginate";
+import { useQuery } from "react-query";
+import isNull from "lodash/isNull";
 
 function MovieSearch({}) {
   const { register, handleSubmit } = useForm();
-  const [moviesResponse, setMoviesResponse] = useState([]);
+  const [moviesResponse, setMoviesResponse] = useState();
+  const [searchedTitle, setSearchedTitle] = useState();
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
+
+  const {
+    isLoading,
+    error,
+    data: byTitleResponse,
+  } = useQuery(
+    ["movieSearch", searchedTitle, page],
+    () => searchByTitle(searchedTitle, page),
+    {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    }
+  );
 
   const onSubmit = async (data) => {
-    const resp = await searchByTitle(data.title);
-    const movieDetails = resp?.data?.Search.map(async (movie) => {
-      return await searchById(movie.imdbID);
-    });
+    setSearchedTitle(data.title);
+  };
 
-    Promise.all(movieDetails).then((values) => {
-      const moreThan100Likes = values.filter(
-        (movie) => parseInt(movie?.data?.imdbVotes.replace(/,/g, ""), 10) > 100
-      );
-      const displayMovies = moreThan100Likes.map((movie) => movie.data);
+  useEffect(() => {
+    console.log("byTitleResponse", byTitleResponse);
+    if (!isNull(byTitleResponse)) {
+      setMoviesResponse(byTitleResponse?.data);
+      setPageCount(byTitleResponse?.data.totalResults / 10);
+    }
+  }, [byTitleResponse]);
 
-      setMoviesResponse(displayMovies);
-    });
+  // if (isLoading) return <h3>Loading...</h3>;
+  // if (error) return <h3>{error.toString()}</h3>;
+  const handlePageClick = (data) => {
+    setPage(data.selected + 1);
   };
 
   return (
@@ -53,9 +73,10 @@ function MovieSearch({}) {
         </div>
       </form>
       <div className="flex flex-wrap justify-between">
-        {/* {moviesResponse &&
-          moviesResponse?.map((movie) => <MovieCard movie={movie} />)} */}
-        {moviesResponse && <MovieList moviesResponse={moviesResponse} />}
+        {moviesResponse?.Search?.length &&
+          moviesResponse.Search.map((movie) => <MovieCard movie={movie} />)}
+        {/* {moviesResponse && <MovieList moviesResponse={moviesResponse} />} */}
+        <ReactPaginate pageCount={pageCount} onPageChange={handlePageClick} />
       </div>
     </>
   );
