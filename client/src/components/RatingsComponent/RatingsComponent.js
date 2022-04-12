@@ -3,7 +3,6 @@ import metacritic from "../../assets/metacritic.png";
 import rottenTomatoesLogo from "../../assets/rotten.png";
 
 function RatingsComponent({ ratings }) {
-  console.log("ratings", ratings);
   function logoSelector(name) {
     if (name === "Internet Movie Database") {
       return imdbLogo;
@@ -13,6 +12,10 @@ function RatingsComponent({ ratings }) {
       return metacritic;
     }
   }
+  const formatVotes = (votes) => {
+    return Intl.NumberFormat().format(parseInt(votes));
+  };
+
   return (
     <div class="flex">
       {ratings?.map((rating) => {
@@ -20,10 +23,10 @@ function RatingsComponent({ ratings }) {
           <div class="flex px-2">
             <img
               class="h-6 w-8 px-1"
-              src={logoSelector(rating.Source)}
-              alt={rating.Source}
+              src={logoSelector(rating.source)}
+              alt={rating.source}
             />
-            {rating.Value}
+            {rating.value} / {`${formatVotes(rating.votes)} votes`}
           </div>
         );
       })}
