@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { useForm, watch } from "react-hook-form";
-import { searchById, searchByTitle, getByTitle } from "../../api/omdbApi";
+import { searchByTitleOMDB } from "../../api/omdbApi";
+import { searchMovieByTitleIMDB } from "../../api/imdbApi";
 import MovieCard from "../MovieCard/MovieCard";
-import ReactPaginate from "react-paginate";
 import { useQuery } from "react-query";
 import isNull from "lodash/isNull";
+import Spinner from "../common/Spinner/Spinner";
 
 function MovieSearch({}) {
   const { register, handleSubmit } = useForm();
   const [moviesResponse, setMoviesResponse] = useState();
   const [searchedTitle, setSearchedTitle] = useState();
-  const [page, setPage] = useState(1);
-  const [pageCount, setPageCount] = useState(1);
 
   const {
     isLoading,
     error,
     data: byTitleResponse,
   } = useQuery(
-    ["movieSearch", searchedTitle, page],
-    () => searchByTitle(searchedTitle, page),
+    ["movieSearch", searchedTitle],
+    () => searchMovieByTitleIMDB(searchedTitle),
     {
       staleTime: Infinity,
       cacheTime: Infinity,
@@ -33,16 +32,18 @@ function MovieSearch({}) {
   useEffect(() => {
     console.log("byTitleResponse", byTitleResponse);
     if (!isNull(byTitleResponse)) {
-      setMoviesResponse(byTitleResponse?.data);
-      setPageCount(byTitleResponse?.data.totalResults / 10);
+      const displayFilteredData = byTitleResponse?.data.results.filter(
+        (movie) => movie.imDbRating && movie.imDbRatingVotes > 500
+      );
+
+      if (displayFilteredData?.length > 1) {
+        displayFilteredData.sort(
+          (a, b) => parseInt(b.imDbRatingVotes) - parseInt(a.imDbRatingVotes)
+        );
+      }
+      setMoviesResponse(displayFilteredData);
     }
   }, [byTitleResponse]);
-
-  // if (isLoading) return <h3>Loading...</h3>;
-  // if (error) return <h3>{error.toString()}</h3>;
-  const handlePageClick = (data) => {
-    setPage(data.selected + 1);
-  };
 
   return (
     <>
@@ -73,10 +74,12 @@ function MovieSearch({}) {
         </div>
       </form>
       <div className="flex flex-wrap justify-between">
-        {moviesResponse?.Search?.length &&
-          moviesResponse.Search.map((movie) => <MovieCard movie={movie} />)}
-        {/* {moviesResponse && <MovieList moviesResponse={moviesResponse} />} */}
-        <ReactPaginate pageCount={pageCount} onPageChange={handlePageClick} />
+        {isLoading && <Spinner />}
+        {error && <h2>Something went wrong...</h2>}
+        {moviesResponse &&
+          moviesResponse.map((movie) => (
+            <MovieCard key={movie.id} movie={movie} />
+          ))}
       </div>
     </>
   );
