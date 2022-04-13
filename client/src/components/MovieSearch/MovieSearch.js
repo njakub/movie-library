@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useForm, watch } from "react-hook-form";
-import { searchByTitleOMDB } from "../../api/omdbApi";
 import { searchMovieByTitleIMDB } from "../../api/imdbApi";
 import MovieCard from "../MovieCard/MovieCard";
 import { useQuery } from "react-query";

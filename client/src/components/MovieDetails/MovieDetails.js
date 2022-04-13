@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
-import ReactPlayer from "react-player";
 
 import { searchByIdIMDB } from "../../api/imdbApi";
 import Spinner from "../common/Spinner/Spinner";
@@ -38,7 +37,7 @@ function MovieDetails({}) {
           />
         </div> */}
         <div class="">
-          <iframe
+          {/* <iframe
             src={`${movie.data.trailer.linkEmbed}?autoplay=false&width=640`}
             width="640"
             height="360"
@@ -46,7 +45,7 @@ function MovieDetails({}) {
             allow="fullscreen; picture-in-picture"
             allowfullscreen
             title="video"
-          ></iframe>
+          ></iframe> */}
         </div>
       </div>
       <p>{movie.data.plot}</p>
