@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 
 function MovieCard({ movie }) {
-  const { title, description, imDbRating, image, imDbRatingVotes, id } = movie;
+  const { title, description, imDbRating, image, metacriticRating, id } = movie;
   let navigate = useNavigate();
   const handleClickView = () =>
     navigate(`/movieDetails`, { state: { movieId: id } });
@@ -26,15 +26,11 @@ function MovieCard({ movie }) {
         class="rounded h-72 w-60 content-center mb-1"
       />
       {imDbRating && (
-        <RatingsComponent
-          ratings={[
-            {
-              source: "Internet Movie Database",
-              value: imDbRating,
-              votes: imDbRatingVotes,
-            },
-          ]}
-        />
+        <div className="mt-2">
+          <RatingsComponent
+            rating={{ imDb: imDbRating, metacritic: metacriticRating }}
+          />
+        </div>
       )}
       <button
         onClick={handleClickView}
