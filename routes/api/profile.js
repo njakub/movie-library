@@ -2,7 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const config = require("config");
 const router = express.Router();
-const auth = require("../../middleware/auth");
+const checkJwt = require("../../middleware/check-jwt");
 // const { check, validationResult } = require("express-validator");
 // bring in normalize to give us a proper url, regardless of what user entered
 // const normalize = require("normalize-url");
@@ -14,7 +14,7 @@ const User = require("../../models/User");
 // @route    GET api/profile/me
 // @desc     Get current users profile
 // @access   Private
-router.get("/me", auth, async (req, res) => {
+router.get("/me", async (req, res) => {
   try {
     const profile = await Profile.findOne({
       user: req.user.id,
@@ -47,25 +47,25 @@ router.get("/", async (req, res) => {
 // @route    POST api/profile
 // @desc     Create or update user profile
 // @access   Private
-router.post("/", auth, async (req, res) => {
+router.post("/", checkJwt, async (req, res) => {
   //   const errors = validationResult(req);
   //   if (!errors.isEmpty()) {
   //     return res.status(400).json({ errors: errors.array() });
   //   }
 
   // destructure the request - not required for now
-  const { ...rest } = req.body;
+  const { authEmail, ...rest } = req.body;
 
   // build a profile
   const profileFields = {
-    user: req.user.id,
+    authEmail,
     ...rest,
   };
 
   try {
     // Using upsert option (creates new doc if no match is found):
     let profile = await Profile.findOneAndUpdate(
-      { user: req.user.id },
+      { authEmail: authEmail },
       { $set: profileFields },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );

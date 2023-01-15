@@ -1,16 +1,24 @@
 const mongoose = require("mongoose");
 
 const ProfileSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+  authEmail: {
+    type: String,
   },
-  favouriteFilms: {
-    type: [String],
+  userId: {
+    type: String,
+  },
+  firstName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
   },
   date: {
     type: Date,
     default: Date.now,
+  },
+  favouriteFilms: {
+    type: [String],
   },
 });
 
